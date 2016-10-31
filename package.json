@@ -47,7 +47,7 @@
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "bench": "^0.3.6",
-    "benchmark": "^2.1.1",
+    "benchmark": "^2.1.2",
     "browserify": "^13.0.1",
     "browzers": "^1.3.0",
     "bulk-require": "^1.0.0",
