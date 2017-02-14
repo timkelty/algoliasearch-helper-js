@@ -1,0 +1,221 @@
+<!DOCTYPE html><html><head><meta content="IE=edge" http-equiv="X-UA-Compatible"><meta charset="utf-8"><meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"><link href="#" rel="icon" type="image/x-icon"><meta content="The Algolia JS Helper is the toolbox to create advanced search experience " name="description"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><!-- / Twitter card--><meta content="summary_large_image" name="twitter:card"><meta content="@Algolia" name="twitter:site"><meta content="@Algolia" name="twitter:creator"><meta content="Algolia JS Helper" name="twitter:title"><meta content="The Algolia JS Helper is the toolbox to create advanced search experience " name="twitter:description"><meta content="Algolia Product image" name="twitter:image"><!-- / OG meta--><meta content="https://community.algolia.com/algoliasearch-helper-js/" property="og:url"><meta content="Algolia JS Helper documentation" property="og:title"><meta content="#" property="og:image"><meta content="article" property="og:type"><meta content="The Algolia JS Helper is the toolbox to create advanced search experience " property="og:description"><meta content="Algolia JS Helper" property="og:site_name"><!-- Use title if it's in the page YAML frontmatter--><title>Helper core concepts</title><link href="https://fonts.googleapis.com/css?family=Raleway:400,500,600" rel="stylesheet" type="text/css"><link rel="stylesheet" href="css/index.css"><link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/github.min.css"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-32446386-12', 'auto');
+ga('send', 'pageview');</script><!-- Google Tag Manager--><noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-N8JP8G" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N8JP8G');</script></head><body><div class="ac-nav"><div class="ac-nav-container"><div class="ac-nav-brand"><a href="https://community.algolia.com/" title="Algolia Community" class="ac-logo"><img alt="Algolia Community" src="https://res.cloudinary.com/hilnmyskv/image/upload/v1484217596/algolia-community-logo-darkbg.svg" width="150" class="ac-logo__lg"><img alt="Algolia Community" src="https://res.cloudinary.com/hilnmyskv/image/upload/v1461180081/logo-community-sm.svg" class="ac-logo__sm"></a><span class="ac-nav-brand-breadcrumb"></span><a href="./" title="Home" class="ac-nav-brand-title">algoliasearch-helper</a></div><div class="ac-nav-menu"><ul class="ac-nav-menu-list"><li class="ac-nav-menu-list-item"><a data-path="gettingstarted.html" href="gettingstarted.html" title="Getting started">Getting started</a></li><li class="ac-nav-menu-list-item"><a data-path="concepts.html" href="concepts.html" title="Concepts">Concepts</a></li><li class="ac-nav-menu-list-item"><a data-path="reference.html" href="reference.html" title="Reference documentation">Reference</a></li><li class="ac-nav-menu-list-item"><a data-path="examples.html" href="examples.html" title="Examples">Examples</a></li><li class="ac-nav-menu-list-icon"><a href="https://github.com/algolia/algoliasearch-helper-js" title="GitHub repository" class="ac-icon"><span class="ac-icon ac-icon-github"></span></a></li></ul></div></div></div><section class="hero-section shrink"><div class="container"><div class="hero-container"><div class="fl-right"><img src="images/al-helper-logo.svg"></div><div class="fl-left"><a href="https://www.algolia.com/?utm_medium=social-owned&amp;utm_source=algoliasearch-helper%20website&amp;utm_campaign=homepage" title="Algolia built this"><span id="icon-algolia" class="icon icon-algolia-small no-mobile"></span></a><h1>Helper core concepts</h1></div></div></div></section><section class="documentation-section"><div class="container"><nav class="sidebar"><ul><li class="level-h2"><a href="#high-level-concepts">High level concepts</a></li><li class="level-h3"><a href="#search-flow">Search flow</a></li><li class="level-h3"><a href="#the-ui-source-of-truth">The UI source of truth</a></li><li class="level-h2"><a href="#managed-parameters">Managed parameters</a></li><li class="level-h3"><a href="#numerical-filters">Numerical filters</a></li><li class="level-h3"><a href="#conjunctive-and-excluding-facets">Conjunctive and excluding facets</a></li><li class="level-h3"><a href="#disjunctive-faceting">Disjunctive faceting</a></li><li class="level-h3"><a href="#hierarchical-faceting">Hierarchical faceting</a></li><li class="level-h2"><a href="#special-capabilities">Special capabilities</a></li><li class="level-h3"><a href="#event-based">Event based</a></li><li class="level-h3"><a href="#chainability">Chainability</a></li><li class="level-h3"><a href="#immutability-of-the-search-parameters">Immutability of the search parameters</a></li><li class="level-h3"><a href="#derivations-of-the-helper-multi-queries">Derivations of the helper: multi-queries</a></li><li class="level-h3"><a href="#smart-page-behaviour">Smart page behaviour</a></li><li class="level-h2"><a href="#final-words-and-where-to-go-next">Final words and where to go next</a></li></ul></nav><div class="documentation-container"><h2 id="high-level-concepts">High level concepts</h2>
+<h3 id="search-flow">Search flow</h3>
+<p>The search flow is the cycle between the UI and the search engine.
+When a user updates a parameter in the UI, a new search is triggered,
+and new results appear. Not only these results are updated, but
+also all the filters available should be too.</p>
+<p><img src="images/concepts/The search cycle.svg" alt="The search flow"></p>
+<h3 id="the-ui-source-of-truth">The UI source of truth</h3>
+<p>The Helper stores and keeps track of the successive filters applied in
+your search UI. It is the source of truth for your search parameters. This
+makes all the UI components that you use independent from each other while
+still being able to trigger the search. For example, the text search input
+will only set the <code>query</code> whereas the category list will only deal with
+facets. But both will trigger the search with the parameters of the other.</p>
+<p><img src="images/concepts/Search states.svg" alt="Search states"></p>
+<p>Changing the parameters of the search with the Helper does not trigger the 
+search. Instead the changes are stored until the <code>search</code> method is called.
+Taking the first schema for reference, the updates look like that:</p>
+<p><img src="images/concepts/Setting Parameters.svg" alt="Setting parameters"></p>
+<h2 id="managed-parameters">Managed parameters</h2>
+<p>Most of the parameters on the Algolia Rest API are simple, strings (eg. <code>query</code>
+which is the fulltext input of the search), numbers (eg. <code>hitsPerPage</code> which
+configures the numbers of records returned per response). But some are trickier
+and delivers great expressivity. For example, you can specify ranges of values
+for numerical attributes. You can also define facets on string based attributes,
+which let you filter on specific values.</p>
+<p>Managing those kind of parameters is hard in a UI context because you need:</p>
+<ul>
+<li>to know the current state</li>
+<li>to manipulate specifically the part, the UI component is responsible for</li>
+</ul>
+<p>And of course, you don&#39;t want to manipulate a deep structure of arrays and
+objects by hand.</p>
+<p>That&#39;s why the filtering APIs are presented as methods on the Helper instance.
+These methods let you edit those filters rather than input the strings themselves.
+We still keep the ability to input the string parameters, but this interface
+(that we call <strong>raw</strong>) is exclusive with the higher level one (that we call <strong>managed</strong>)</p>
+<p>This layer on top of the Algolia API even lets us create features that don&#39;t
+exist in the Rest API. We have created some features that rely on multiple
+queries based on the pattern we found over time.</p>
+<p>On and on, the overall idea of those managed API&#39;s is to make the usage of
+Algolia filters as easy as possible. Some are mainly adaptation of the API,
+like Numerical, Facets and Excluding Facets, but others are more complex and
+bring new features.</p>
+<h3 id="numerical-filters">Numerical filters</h3>
+<p>The numerical filters brings the ability to manage constraints over numerical
+attributes. For each attribute, you can combine sets of constraints. Those
+filters for any numerical data, but also with dates if converted to timestamps
+in the records.</p>
+<h3 id="conjunctive-and-excluding-facets">Conjunctive and excluding facets</h3>
+<p>With facets, you can filter in or out the results based on the values that an
+attribute can take. Let&#39;s take an example: </p>
+<pre><code class="hljs js">[
+  { name: <span class="hljs-string">'Paris'</span>,
+    type: [<span class="hljs-string">'city'</span>, <span class="hljs-string">'capital'</span>] },
+  { name: <span class="hljs-string">'Marseille'</span>,
+    type: [<span class="hljs-string">'city'</span>] },
+  { name: <span class="hljs-string">'London'</span>,
+    type: [<span class="hljs-string">'city'</span>, <span class="hljs-string">'capital'</span>]}
+]</code></pre>
+
+<p>These three records represent cities. If we facet <code>type</code>, Algolia will
+return the list of available values (city, capital) and will let us
+filter using those values.</p>
+<p>With conjunctive facets you express that you want two or more values
+combined with AND. With excluding facets, you express that you <strong>DO NOT</strong>
+want values.</p>
+<p>These facets need to be declared so that the values can be retrieved and
+then filtered through the UI (<a href="reference.html#conjunctive-facets">see the configuration</a>).</p>
+<h3 id="disjunctive-faceting">Disjunctive faceting</h3>
+<p>With Algolia you can retrieve for each faceted attribute the most used
+values in your results. This means that if a value is not in your
+results, you won&#39;t be aware of its existence. This can be inconvenient when
+you want your user to be able to select many values and combine them with an OR
+condition, because once you&#39;ve selected a value the other that could
+be chosen won&#39;t be returned by Algolia.</p>
+<p>Let&#39;s take an example. Imagine your dataset contains high-tech products.
+And those products are categorized. Amongst those products you have TVs
+and video projectors, each in their own category. By default, if you select
+TV then only the TV will be returned and therefore the facet values for the
+category will only be TV.</p>
+<p><img src="images/concepts/conjunctive facets.svg" alt="conjunctive facets"></p>
+<p>The purpose of the disjunctive facets is to be able to search further than
+a single facet filter. To do that, the helper implements a second request that
+will be specifically tailored to retrieve the other facet values possible for
+a specific faceted attribute.</p>
+<p>Going back to our example, the first request retrieves the results and a second
+one will retrieve the values for the category attribute. When the results come
+back from Algolia the two requests will be merged and a single list of values
+will be created.</p>
+<p><img src="images/concepts/disjunctive facets.svg" alt="disjunctive facets"></p>
+<p>These facets need to be declared so that the values can be retrieved and
+then filtered through the UI (<a href="reference.html#disjunctive-facets">see the configuration</a>).</p>
+<h3 id="hierarchical-faceting">Hierarchical faceting</h3>
+<p>The hierarchical facets extends the concepts used in the disjunctive faceting
+in order to be able to organize the values in a tree like fashion.</p>
+<p>When using the same high-tech e-shop example (see the previous paragraph about
+<a href="#disjunctive-faceting">disjunctive faceting</a>), we can imagine that TV and video
+projectors are organized in a higher category called video hardware.</p>
+<p>The structure inside the record should contain all the variations per level. For a
+product in the TV category, the record will have a <code>lvl1</code> attribute that will contain
+<code>video hardware</code> and a <code>lvl2</code> that will contain <code>video hardware &gt; TV</code>. With the
+hierarchical feature, you can facet values per level and you will be provided the correct
+hierarchy of facet values.</p>
+<pre><code class="hljs markdown"><span class="hljs-bullet">- </span>Video hardware
+   - TV
+   - DVR
+ - Kitchen</code></pre>
+
+<p>Since this is a feature built on top of the Algolia API, we expect the dataset to
+follow a hierachical notation (<a href="reference.html#hierarchical-facets">see the configuration</a>).</p>
+<h2 id="special-capabilities">Special capabilities</h2>
+<p>What makes the special sauce of the Helper is a conjunction of patterns and
+smart tricks to help you make the best search UI:</p>
+<ul>
+<li>chainable API</li>
+<li>event-based</li>
+<li>immutable model</li>
+<li>smart page handling</li>
+</ul>
+<h3 id="event-based">Event based</h3>
+<p>In UIs, it&#39;s very likely that you will have more than a single point where you
+want to update and trigger a new search. On the other hand, it&#39;s very unlikely
+that where you want to update the UI will be at the same place.</p>
+<p>For those reasons, the Helper implements events. There are four kinds of events
+on the Helper : </p>
+<ul>
+<li><code>change</code>: triggered when a parameter is set or updated</li>
+<li><code>search</code>: triggered when the search is sent to Algolia</li>
+<li><code>result</code>: triggered when the results are retrieved Algolia</li>
+<li><code>error</code>:  triggered when Algolia sends back an error</li>
+</ul>
+<p><img src="images/concepts/Events.svg" alt="Search states"></p>
+<h3 id="chainability">Chainability</h3>
+<p>All the write operations of the Helper are chainable. This means that
+all those methods will return the Helper object. This leads to a more
+concise way to express the operations done on the helper.</p>
+<p>For example, setting the query and triggering the search looks like that,
+thanks to the chainability:</p>
+<pre><code class="hljs js">helper.setQuery(<span class="hljs-string">'tv'</span>)
+      .search();</code></pre>
+
+<h3 id="immutability-of-the-search-parameters">Immutability of the search parameters</h3>
+<p>An immutable object is an object which values cannot be modified after it is
+created. For example, in Javascript strings are immutable. This means that
+you can&#39;t directly change the value and each write operation will return a new
+object.</p>
+<p>Inside the Helper, we use an immutable object to store the search parameters. The
+Helper write and read methods are proxies to the search parameters object.</p>
+<p>For example, when the setQuery method is called it is forwarded to the search
+parameters. This will create a new instance of the search parameters, which
+will replace the <code>state</code> property of the helper, and finally the helper will
+emit the <code>change</code> event.</p>
+<p>The immutability of the search parameters has some interesting usage:</p>
+<ul>
+<li>each search parameter is stored when the request is sent to Algolia, and
+provided back when the <code>result</code> event is fired.</li>
+<li>if we want to create urls with different parameters, we can reuse the search
+parameters object and its api to create new states that we can serialize.</li>
+</ul>
+<p><img src="images/concepts/State is immutable.svg" alt="Search states"></p>
+<h3 id="derivations-of-the-helper-multi-queries">Derivations of the helper: multi-queries</h3>
+<p>Derivation is the ability to create virtual helpers to be able to generate
+requests based on the main JS Helper instance. For example, with this feature,
+you can:</p>
+<ul>
+<li>query two indices at the same time.</li>
+<li>search in the same index with different parameters.</li>
+</ul>
+<p>The virtual helpers are created by calling the <a href="reference.html#AlgoliaSearchHelper#derive">derive</a> method with a <em>derivation
+function</em>. The derivation function is used when <code>search</code> is called. For each
+derivated Helper, it will derive a new state from the main. All of those requests
+will be sent together along the main helper request. When Algolia answers come back,
+the results will be dispatched to each helper via events (<code>error</code> or <code>result</code>).</p>
+<p>Here is a schematic view of the process happening during a search with derivated helpers:</p>
+<p><img src="images/concepts/derive-simplified.svg" alt="derivation" style="max-width: 100%;margin: 0 5%;"></p>
+<p>This schema only present a single derivated helper but there can be more than one.</p>
+<h3 id="smart-page-behaviour">Smart page behaviour</h3>
+<p>In a search engine, the most relevant results are always on the first page.
+And each new set of parameters sent to Algolia will return a new set of
+results. This means that each time the parameters are changed, the most relevant
+will be on the very first page. Also, each new set of parameters might change
+the number of available pages. Therefore, when the parameters are changed the
+page should be set to 0. This would lead to writing such code for each kind of
+settings to be set:</p>
+<pre><code class="hljs js"><span class="hljs-comment">// When we set the query</span>
+helper.setQuery(query)
+      .setPage(<span class="hljs-number">0</span>)
+      .search();
+
+<span class="hljs-comment">// When we change a tag filter</span>
+helper.toggleTag(tag)
+      .setPage(<span class="hljs-number">0</span>)
+      .search();</code></pre>
+
+<p>To avoid this kind of repetition, all the write methods on the helper will set
+the page to 0 with the exception of <code>setPage</code>. This is not the case for write
+methods on the immutable search parameters.</p>
+<h2 id="final-words-and-where-to-go-next">Final words and where to go next</h2>
+<p>Congratulations for reading our high level presentation of the Helper. We hope that
+you have now a better understanding of what makes the Helper very useful when building
+instantsearch UI&#39;s.</p>
+<p>If you haven&#39;t already, we suggest that you have a look at the
+<a href="gettingstarted.html">getting started</a> to quickly start your very own search. If you
+are more interested in going in-depth the helper, be sure to check out:</p>
+<ul>
+<li><a href="reference.html">The reference API</a></li>
+<li><a href="examples.html">The examples</a></li>
+</ul>
+<p>If after all, you think that you need a more comprehensive and widget-based library,
+we made <a href="https://community.algolia.com/instantsearch.js/">instantsearch.js</a> for that.</p>
+</div></div></section><section class="ac-footer"><div class="ac-footer-container"><p class="ac-footer-links">Code licensed under<a href="https://raw.githubusercontent.com/algolia/algoliasearch-helper-js/master/LICENSE" class="ac-footer-link-item">MIT</a><br><a href="https://github.com/algolia/algoliasearch-helper-js" class="ac-footer-link-item">Github</a><a href="https://github.com/algolia/algoliasearch-helper-js/issues" class="ac-footer-link-item">issues</a></p></div><div class="ac-footer-container ac-footer-brand"><p>This project is part of</p><img src="images/community-badge.svg" class="ac-footer-brand-icon"><figure><img src="https://res.cloudinary.com/hilnmyskv/image/upload/v1484219849/algolia-community-logo-words-darkbg.svg" class="ac-footer-brand-logo"><figcaption>Algolia Community</figcaption></figure><a href="https://community.algolia.com/" class="ac-footer-btn ac-footer-btn-cta">See More</a><span class="ac-icon ac-icon-love-dark"></span></div><p class="ac-footer-version">Latest version: 2.18.1</p><div class="ac-footer-actions"><div class="footer-container"><p>Build unique search experiences with Algolia</p><a href="https://www.algolia.com/why?utm_medium=social-owned&amp;utm_source=places%20website&amp;utm_campaign=homepage&amp;utm_term=why" class="ac-footer-btn ac-footer-btn-ghost-grey">See Why<span class="ac-icon-triangle"></span></a><a href="https://www.algolia.com/users/sign_up?utm_medium=social-owned&amp;utm_source=places%20website&amp;utm_campaign=homepage&amp;utm_term=get_started" class="ac-footer-btn ac-footer-btn-ghost-pink">Get Started For Free</a></div></div></section><script src="js/main.js"></script></body></html>
